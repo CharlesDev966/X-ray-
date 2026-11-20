@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BodyScan X-Ray + Symptom Guide</title>
+<style>
+:root{--bg:#070d14;--card:#101a26;--line:#1e3248;--txt:#e6f1fb;--mut:#8aa4bd;--acc:#35e0ff;--red:#ff5a5a}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+header{padding:14px 16px;text-align:center;border-bottom:1px solid var(--line)}
+header h1{margin:0;font-size:20px;color:var(--acc)}
+nav{display:flex;gap:8px;padding:10px;justify-content:center}
+nav button{flex:1;max-width:220px;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;font-size:15px;cursor:pointer}
+nav button.on{background:var(--acc);color:#04202a;font-weight:700}
+main{max-width:560px;margin:0 auto;padding:10px 14px 40px}
+.banner{background:#2a1d0a;border:1px solid #6b4a12;color:#ffd58a;padding:10px;border-radius:10px;font-size:13px;margin-bottom:12px}
+.stage{position:relative;width:100%;aspect-ratio:3/4;background:#000;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:grayscale(1) invert(1) contrast(1.6) brightness(.9) hue-rotate(180deg) sepia(.3) saturate(2.2)}
+#ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;clip-path:inset(0 0 100% 0)}
+#laser{position:absolute;left:0;right:0;top:0;height:3px;background:var(--acc);box-shadow:0 0 18px 6px var(--acc);display:none}
+#msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--mut)}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn{flex:1;padding:12px;border:0;border-radius:10px;background:var(--acc);color:#04202a;font-weight:700;font-size:15px;cursor:pointer}
+.btn.alt{background:var(--card);color:var(--txt);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+label.chk{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:14px}
+#res{margin-top:10px;color:var(--acc);text-align:center;min-height:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.grid label{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;display:flex;gap:8px;align-items:center;cursor:pointer}
+.grid label.red{border-color:#6b2a2a}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;font-size:14px;line-height:1.5}
+.card h3{margin:0 0 6px;color:var(--acc);font-size:16px}
+.card h4{margin:8px 0 2px;font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.card ul{margin:0;padding-left:18px}
+.emerg{background:#3a1010;border:2px solid var(--red);color:#ffd0d0;padding:12px;border-radius:12px;margin-top:10px;font-weight:600}
+.hide{display:none}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:0 16px 24px}
+</style>
+</head>
+<body>
+<header><h1>BodyScan</h1></header>
+<nav>
+  <button id="t1" class="on" onclick="tab(1)">X-Ray Scanner</button>
+  <button id="t2" onclick="tab(2)">Symptom Guide</button>
+</nav>
+<main>
+<section id="p1">
+  <div class="banner">For entertainment only. This is a fun effect and does not see inside your body or detect any illness.</div>
+  <div class="stage">
+    <video id="v" autoplay playsinline muted class="hide"></video>
+    <svg id="ov" viewBox="0 0 200 300" preserveAspectRatio="xMidYMid meet" class="hide">
+      <g id="mus" fill="rgba(255,70,70,.45)" stroke="rgba(255,150,150,.8)" stroke-width="1">
+        <path d="M70 70 Q100 60 100 85 L100 110 Q80 112 66 98Z"/><path d="M130 70 Q100 60 100 85 L100 110 Q120 112 134 98Z"/>
+        <rect x="86" y="112" width="12" height="14" rx="4"/><rect x="102" y="112" width="12" height="14" rx="4"/>
+        <rect x="86" y="130" width="12" height="14" rx="4"/><rect x="102" y="130" width="12" height="14" rx="4"/>
+        <rect x="86" y="148" width="12" height="14" rx="4"/><rect x="102" y="148" width="12" height="14" rx="4"/>
+        <ellipse cx="54" cy="98" rx="9" ry="22" transform="rotate(8 54 98)"/><ellipse cx="146" cy="98" rx="9" ry="22" transform="rotate(-8 146 98)"/>
+        <ellipse cx="44" cy="138" rx="7" ry="20" transform="rotate(6 44 138)"/><ellipse cx="156" cy="138" rx="7" ry="20" transform="rotate(-6 156 138)"/>
+        <ellipse cx="84" cy="205" rx="13" ry="38"/><ellipse cx="116" cy="205" rx="13" ry="38"/>
+        <ellipse cx="82" cy="262" rx="9" ry="24"/><ellipse cx="118" cy="262" rx="9" ry="24"/>
+      </g>
+      <g id="bone" fill="none" stroke="rgba(230,245,255,.9)" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="100" cy="30" r="14"/><path d="M100 44V170"/>
+        <path d="M72 66Q100 58 128 66"/>
+        <path d="M78 80Q100 90 122 80M76 92Q100 102 124 92M78 104Q100 114 122 104M80 116Q100 124 120 116"/>
+        <path d="M100 66V120"/>
+        <path d="M76 160Q100 190 124 160L120 172Q100 184 80 172Z"/>
+        <path d="M72 66L52 120L44 168M128 66L148 120L156 168"/>
+        <path d="M86 176L82 232L82 286M114 176L118 232L118 286"/>
+      </g>
+    </svg>
+    <div id="laser"></div>
+    <div id="msg">Tap "Start camera", then stand back so your whole body fits the frame.</div>
+  </div>
+  <div class="row">
+    <button class="btn alt" id="camBtn" onclick="startCam()">Start camera</button>
+    <button class="btn" id="scanBtn" onclick="scan()" disabled>Scan body</button>
+  </div>
+  <div class="row">
+    <label class="chk"><input type="checkbox" id="cm" checked onchange="layers()"> Muscles</label>
+    <label class="chk"><input type="checkbox" id="cb" checked onchange="layers()"> Skeleton</label>
+  </div>
+  <div id="res"></div>
+</section>
+
+<section id="p2" class="hide">
+  <div class="banner">General health information only. This is not a diagnosis and does not recommend medicines. See a doctor or pharmacist for treatment.</div>
+  <div>Select what you are experiencing:</div>
+  <div class="grid" id="sym"></div>
+  <button class="btn" onclick="guide()" style="width:100%">Show guide</button>
+  <div id="out"></div>
+</section>
+</main>
+<footer>Not a medical device. In an emergency, call your local emergency number or go to the nearest hospital.</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+function tab(n){
+  $('p1').classList.toggle('hide',n!==1);$('p2').classList.toggle('hide',n!==2);
+  $('t1').classList.toggle('on',n===1);$('t2').classList.toggle('on',n===2);
+}
+
+/* ---------- Scanner ---------- */
+let stream=null,busy=false;
+async function startCam(){
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    $('v').srcObject=stream;$('v').classList.remove('hide');$('msg').classList.add('hide');
+    $('scanBtn').disabled=false;$('camBtn').textContent='Camera on';
+  }catch(e){
+    $('msg').textContent='Camera not available. Allow camera permission, or open the site over HTTPS.';
+  }
+}
+function layers(){
+  $('mus').style.display=$('cm').checked?'':'none';
+  $('bone').style.display=$('cb').checked?'':'none';
+}
+function scan(){
+  if(busy)return;busy=true;
+  const ov=$('ov'),L=$('laser'),dur=4000,t0=performance.now();
+  ov.classList.remove('hide');L.style.display='block';$('scanBtn').disabled=true;
+  $('res').textContent='Scanning...';ov.style.clipPath='inset(0 0 100% 0)';
+  const stage=document.querySelector('.stage');
+  (function step(t){
+    const p=Math.min((t-t0)/dur,1);
+    L.style.top=(p*100)+'%';
+    ov.style.clipPath='inset(0 0 '+((1-p)*100)+'% 0)';
+    if(p<1)requestAnimationFrame(step);
+    else{
+      L.style.display='none';busy=false;$('scanBtn').disabled=false;
+      const jokes=['Scan complete: muscles detected. Skeleton detected. Looks like a human.','Scan complete: 206 bones found (just kidding, this is a visual effect).','Scan complete: all systems look fun.'];
+      $('res').textContent=jokes[Math.floor(Math.random()*jokes.length)]+' (Entertainment only)';
+    }
+  })(t0);
+}
+
+/* ---------- Symptom guide (no drug names or doses) ---------- */
+const S={
+ fever:{n:'Fever / hot body',info:'Fever is the body responding to an infection or inflammation. Common causes include viral infections, malaria (in areas where it is common), typhoid and other bacterial infections.',care:['Rest and drink plenty of fluids','Wear light clothing and keep the room cool','Ask a pharmacist or doctor what is safe for fever in your age and health condition'],see:['Fever lasting more than 2 to 3 days','Fever in a baby under 3 months or a pregnant woman','Fever with stiff neck, confusion, fits or a rash','In malaria-prone areas, get a malaria test early rather than guessing']},
+ headache:{n:'Headache',info:'Often caused by tension, dehydration, lack of sleep, eye strain or fever. Migraines cause throbbing pain, sometimes with nausea and light sensitivity.',care:['Drink water and rest in a quiet, dim room','Eat regular meals and sleep enough','Reduce screen time and check your eyesight if it is frequent'],see:['Sudden, very severe headache','Headache after a head injury','Headache with fever and stiff neck, vision changes, weakness or confusion','Headaches that keep getting worse or come with high blood pressure']},
+ cough:{n:'Cough',info:'Commonly from colds, flu, allergies or throat irritation. A cough that lasts weeks can have other causes such as asthma, reflux or chest infection.',care:['Warm fluids and rest','Avoid smoke and dust','Keep hydrated'],see:['Cough lasting more than 3 weeks','Coughing blood','Cough with night sweats, weight loss or fever (ask about a TB test)','Shortness of breath or wheezing']},
+ throat:{n:'Sore throat',info:'Usually from a viral infection. Sometimes it is a bacterial throat infection that needs a doctor to confirm.',care:['Warm drinks and salt-water gargle','Rest your voice and drink fluids'],see:['Difficulty swallowing or breathing','Sore throat lasting more than a week','High fever with swollen glands or white patches on the throat']},
+ stomach:{n:'Stomach pain',info:'Can come from indigestion, gas, ulcers, food infection, constipation or period pain. The location and type of pain matter.',care:['Eat light meals and avoid spicy, oily food','Drink water','Avoid alcohol and smoking'],see:['Severe or worsening pain','Pain in the lower right abdomen','Pain with vomiting, fever, blood in stool or a hard, swollen belly','Pain in pregnancy']},
+ diarrhea:{n:'Diarrhoea / vomiting',info:'Often caused by contaminated food or water, or a stomach infection. The main danger is losing too much fluid.',care:['Take oral rehydration solution (ORS) or plenty of safe fluids in small sips','Eat light foods when you can','Wash hands and use clean water'],see:['Signs of dehydration: very dry mouth, little urine, dizziness','Blood in stool or vomit','More than 2 days in adults, or any serious case in babies, children and the elderly']},
+ fatigue:{n:'Tiredness / weakness',info:'Can come from poor sleep, stress, poor diet, anaemia, malaria, infections, thyroid problems or low mood.',care:['Keep a regular sleep routine','Eat balanced meals with iron-rich foods','Drink water and stay lightly active'],see:['Tiredness lasting more than 2 weeks','Unexplained weight loss, pale skin or fainting','Tiredness with fever or low mood that affects daily life']},
+ aches:{n:'Body aches / joint pain',info:'Often from infections, overwork, injury or arthritis. Body aches with fever are common in flu and malaria.',care:['Rest the area and apply a warm cloth','Gentle stretching when pain eases','Stay hydrated'],see:['Swollen, hot or red joints','Pain after an injury or inability to move a limb','Aches with high fever lasting more than 2 days']},
+ rash:{n:'Skin rash / itching',info:'May be caused by allergies, fungal infection, heat, insect bites or skin conditions.',care:['Keep the area clean and dry','Avoid scratching and known triggers','Wear loose cotton clothing'],see:['Rash with fever, swelling of face or lips, or breathing trouble','Rapidly spreading rash or blisters','Rash that lasts more than 2 weeks']},
+ dizzy:{n:'Dizziness',info:'Can come from dehydration, low blood sugar, low or high blood pressure, anaemia or ear problems.',care:['Sit or lie down and drink water','Eat if you have not eaten','Get up slowly'],see:['Fainting','Dizziness with chest pain, weakness on one side, slurred speech or severe headache','Frequent episodes']},
+ chest:{n:'Chest pain',emerg:true,info:'Chest pain can have many causes, but some are serious, such as heart problems.',care:['Stop what you are doing and sit down','Do not wait to see if it passes'],see:['Get medical help immediately, especially if the pain spreads to the arm, jaw or back, or comes with sweating or breathlessness']},
+ breath:{n:'Difficulty breathing',emerg:true,info:'Trouble breathing can be caused by asthma, infection, allergy, heart or lung problems.',care:['Sit upright and stay calm','Do not wait at home'],see:['Seek emergency help immediately']}
+};
+const RED=['chest','breath'];
+$('sym').innerHTML=Object.keys(S).map(k=>`<label class="${S[k].emerg?'red':''}"><input type="checkbox" value="${k}"> ${S[k].n}</label>`).join('');
+function li(a){return '<ul>'+a.map(x=>'<li>'+x+'</li>').join('')+'</ul>'}
+function guide(){
+  const sel=[...document.querySelectorAll('#sym input:checked')].map(i=>i.value);
+  let h='';
+  if(!sel.length){$('out').innerHTML='<div class="card">Select at least one symptom.</div>';return}
+  if(sel.some(k=>RED.includes(k)))h+='<div class="emerg">You selected a possible emergency symptom. Please get medical help now. Do not rely on this site.</div>';
+  sel.forEach(k=>{const s=S[k];h+=`<div class="card"><h3>${s.n}</h3><p>${s.info}</p><h4>Self-care</h4>${li(s.care)}<h4>See a doctor if</h4>${li(s.see)}</div>`});
+  if(sel.length>2)h+='<div class="card">Having several symptoms at once is a good reason to visit a clinic or hospital for proper tests.</div>';
+  h+='<div class="card">Only a health professional can diagnose you and decide on medicines, because the right choice depends on your age, weight, allergies, pregnancy and other drugs you take.</div>';
+  $('out').innerHTML=h;
+}
+layers();
+</script>
+</body>
+</html>
